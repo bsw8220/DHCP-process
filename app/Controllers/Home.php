@@ -12,9 +12,9 @@ class Home extends BaseController
 		echo view('Board/BoardWrite');
 	}
 
-	public function viewcon()
+	public function view($id)
 	{
-		echo view('Board/BoardWrite');
+		echo view('Board/BoardView');
 	}
 
 	public function rewrite()

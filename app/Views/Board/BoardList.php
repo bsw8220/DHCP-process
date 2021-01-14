@@ -13,10 +13,12 @@
     <div data-app>
      <v-container> 
      <v-data-table
+      class="pa-md-20 mx-lg-auto text-center"
       :headers="headers"
       :items="desserts" 
       :items-per-page="5" 
       class="elevation-1" 
+      @click:row="rowClick"
      > 
      </v-data-table> 
      <v-row>
@@ -27,18 +29,13 @@
   </template>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script src="/js/main.js"></script>
-  <script src="/js/route.js"></script>
   <script>
-    // const router = VueRouter()
     new Vue({
       el: '#app',
       vuetify: new Vuetify(),
-      router: new VueRouter(),
       name: 'BoardList',
       created() {
         this.fetch() 
@@ -46,19 +43,21 @@
       methods: {
         fetch() {
           console.log('fetch list') 
-          axios.get('http://localhost/index.php/Boarddb/list') 
+          axios.get('http://localhost/index.php/Boarddb') 
           .then((response) => {
           console.log(response) 
-          this.desserts=response.results
+          this.desserts=response.data
           }) 
           .catch((error) => {
           console.log(error)
           }) 
         },
         writeClick() {
-         // this.$router.push('./index.php/home/write')
-         location.href = './index.php/home/write' 
+         location.href = 'http://localhost/index.php/home/write' 
         },
+        rowClick(item) {
+         location.href = 'http://localhost//index.php/home/view/'+ item.id
+        } 
       }, 
       data() {
           return{
