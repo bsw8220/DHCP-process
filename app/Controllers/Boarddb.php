@@ -8,35 +8,55 @@ class Boarddb extends ResourceController
 {
     public function index()
     {
-      $db = \Config\Database::connect('default');
-      $query = $db->query('SELECT * FROM board');
-      $results = $query->getResult();
-      return $this->respond($results);
+    	$boardModel = new BoardModel();
+    	$data = $boardModel -> findAll();
+    	return $this->respond($data);
     }
 
-    public function insert()
+    public function create()
     {
-      $db = \Config\Database::connect('default');
-      $query = $db->query('INSERT INTO `board` (`name`, `title`, `comment`, `wdate`) VALUES $title, $name, $comment, $wdate');
-      $results = $query->getResult();
-      return $this->respond($results);
+        // $boardModel = new BoardModel();
+        $db = db_connect('default');
+        $builder = $db->table('board');
+        $data = [
+        	'name' => $this->request->getPost('name'),
+            'title' => $this->request->getPost('title'),
+            'comment'  => $this->request->getPost('comment')
+            ];
+        $builder->insert($data);
+        $response = [
+	          'status'   => 201,
+	          'error'    => null,
+	          'messages' => [
+              'success' => 'Employee created successfully'
+	          ]
+	      ];
+	      return $this->respondCreated($response);
     }
 
     public function eachdata($id)
     {
-      $db = \Config\Database::connect('default');
-      $query = $db->query('SELECT * FROM board where id ='.$id);
-      $results = $query->getResult();
-      return $this->respond($results);
+        $boardModel = new BoardModel();
+    	$data = $boardModel -> find($id);
+        return $this->respond($data);
     }
 
     public function deletedata($id)
     {
-    	$boardModel = new BoardMode();
-    	$data = $boardModel -> find($id);
-    	if($data){
-    		$boardModel -> delete($id);
-    	}
+    	$boardModel = new BoardModel();
+    	
+    	if($boardModel->find($id)){
+
+	         $boardModel->delete($id);
+
+	         session()->setFlashdata('message', 'Deleted Successfully!');
+	         session()->setFlashdata('alert-class', 'alert-success');
+      	}else{
+	         session()->setFlashdata('message', 'Record not found!');
+	         session()->setFlashdata('alert-class', 'alert-danger');
+      	}
+
+      return redirect()->route('/');
     	return redirect()->to('Board/BoardList');
     }
 }

@@ -10,7 +10,8 @@
 <body>
   <div id="app"> 
   <template>
-   <v-form>
+   <v-form
+   @submit.prevent="sendPost">
     <v-container>
      <v-row>
       제목 
@@ -49,7 +50,9 @@
       ></v-textarea> 
      </v-row> 
      <v-row>
-      <v-btn outlined color="blue" @click="writeClick"> 등록 </v-btn> 
+      <v-btn 
+      outlined color="blue" 
+      type="submit"> 등록 </v-btn> 
       <v-btn outlined color="blue" @click="listClick"> 목록 </v-btn> 
      </v-row> 
     </v-container> 
@@ -58,64 +61,34 @@
   </div>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
   <script>
-    // var router = new VueRouter({
-    //   routes: [ 
-    //     { path: '/', 
-    //     name: 'BoardList', 
-    //     component: BoardList 
-    //   } ]
-    // })
     new Vue({
       el: '#app',
       vuetify: new Vuetify(),
-      name: 'BoardWrite', 
        methods: {
-        writeClick() {
-         // if(this.$route.params.seq) {
-         //  axios.put('http://localhost/index.php/Boarddb', this.$data) 
-         //  .then((response) => {
-         //   console.log(response) 
-         //   this.$router.push('/') 
-         //  }) 
-         //  .catch((error) => {
-         //   console.log(error) 
-         //  }) 
-         // } 
-         // else {
-          this.$data.wdate = this.getNowDate() 
-          // this.$data.uptDt = this.getNowDate() 
-          axios.post('http://localhost/index.php/Boarddb/insert', this.$data) 
-          .then((response) => {
-           console.log(response) 
-           // this.$router.push('/') 
-          }) 
-          .catch((error) => {
-           console.log(error) 
-          }) 
-         // } 
+        sendPost: function () {
+          var postData = new FormData();
+            postData.append('title', this.title);
+            postData.append('name', this.name);
+            postData.append('comment', this.comment);
+            axios.post('http://localhost/index.php/boarddb/create', postData)
+            .then(function(res) {
+              console.log(res.data)
+            }, function() {
+              console.log('failed')
+          })
         },
         listClick() {
          location.href = '../' 
-        },
-        getNowDate() {
-         var nowDate = new Date() 
-         var year = nowDate.getFullYear().toString() 
-         var month = (nowDate.getMonth() + 1).toString() 
-         var day = nowDate.getDate().toString() 
-
-         return year + "-" + (month[1] ? month : "0" + month[0]) + "-" + (day[1] ? day : "0" + day[0]) 
-        } 
+        }
        }, 
        data() {
         return {
          title : '', 
          name : '',
          comment: '', 
-         wdate: '', 
         } 
        }
       })
