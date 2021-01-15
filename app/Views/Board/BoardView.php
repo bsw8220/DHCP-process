@@ -10,77 +10,109 @@
 </head>
 <body>
   <div id="app"> 
-  <template>
-   <v-form>
-    <v-container
-      class="pa-md-10 mx-lg-auto"
-    >
-     <v-row>
-      제목 
-     </v-row> 
-     <v-row>
-      {{ title }} 
-     </v-row> 
-     <v-row>
-      내용 
-     </v-row> 
-     <v-row>
-      {{ context }} 
-     </v-row> 
-     <v-row>
-      <v-btn outlined color="blue" @click="listClick"> 목록 </v-btn>
-      <v-btn outlined color="blue" @click="delClick"> 삭제 </v-btn>  
-     </v-row> 
-    </v-container> 
-   </v-form> 
-  </template> 
+    <div data-app>
+      <template>
+        <v-app-bar> {{ title }} </v-app-bar>
+        <v-form>
+          <v-container>
+            <div class="vwriter">
+              <v-col
+                cols="12"
+                md="4">
+                <v-banner>
+                  작성자
+                </v-banner>
+              </v-col>
+              <v-col
+                cols="12"
+                md="6">
+                 {{ name }}
+              </v-col>
+              <v-spacer></v-spacer> 
+            </div>
+            <div class="vcomment">
+              <v-col
+                cols="12"
+                md="4">
+                <v-banner>
+                  내용 
+                </v-banner>
+              </v-col>
+              <v-col
+                cols="12"
+                md="4">
+                {{ comment }} 
+              </v-col> 
+            </div>
+            <v-row align="center">
+              <v-col
+                cols="12"
+                sm="6">
+              <v-btn outlined color="blue" @click="listClick"> 목록 </v-btn>
+              <v-btn outlined color="blue" @click="delClick"> 삭제 </v-btn>  
+              <v-btn outlined color="blue" @click="editClick"> 수정 </v-btn>
+              </v-col>
+            </v-row> 
+          </v-container> 
+        </v-form> 
+      </template> 
+    </div>
   </div>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
   <script>
     new Vue({
       el: '#app',
-           vuetify: new Vuetify(),
-           name: 'BoardView', 
-           created() {
-            this.fetch() 
-           }, 
-           methods: {
-            fetch() {
-             axios.get('http://localhost:8000/api/board/' + this.$$router.params.seq) 
-             .then((response) => {
-              console.log(response) 
-             }) 
-             .catch((error) => {
+        vuetify: new Vuetify(),
+        data() {
+          return{
+            id: location.search,
+            title : '', 
+            name : '',
+            comment: ''
+            } 
+          }, 
+        created() {
+          this.fetch() 
+        }, 
+        methods: {
+          fetch() {
+            const data = location.pathname.split('/');
+            const id = data[data.length-1];
+            axios.get(`http://localhost/index.php/Boarddb/eachdata/${id}`) 
+            .then((response) => {
+              console.log(response)
+              this.title = response.data.title
+              this.name = response.data.name
+              this.comment = response.data.comment
+            }) 
+            .catch((error) => {
               console.log(error) 
-             }) 
-            }, 
-            listClick() {
-             this.$router.push('/') 
-            },
-            deleteClick() {
-             if(this.$data.seq) {
-              axios.delete('http://localhost:8000/api/board/' + this.$data.seq) 
-              .then((response) => {
-               console.log(response) 
-               this.$router.push('/') 
-              }) 
-              .catch((error) => {
-               console.log(error) 
-              }) 
-             } 
-            } 
-           }, 
-           data () {
-            return {
-             title : "", 
-             context: "" 
-            } 
-          } 
-      
+            }) 
+          }, 
+          listClick() {
+            location.href = '../'
+          },
+          delClick() {
+            const data = location.pathname.split('/');
+            const id = data[data.length-1];
+            axios.delete(`http://localhost/index.php/Boarddb/deletedata/${id}`) 
+            .then((response) => {
+              console.log(response)
+              location.href = '../'
+            }) 
+            .catch((error) => {
+              console.log(error) 
+            }) 
+          },
+          editClick(item) {
+            const data = location.pathname.split('/');
+            const id = data[data.length-1];
+            location.href = `http://localhost/index.php/home/upData/${id}`
+          }, 
+        }, 
     })
   </script>
 </body>

@@ -21,14 +21,37 @@ class Boarddb extends ResourceController
         $data = [
         	'name' => $this->request->getPost('name'),
             'title' => $this->request->getPost('title'),
-            'comment'  => $this->request->getPost('comment')
+            'comment'  => $this->request->getPost('comment'),
+            // 'wdate' => $this->request->getPost('wdate')
             ];
         $builder->insert($data);
         $response = [
 	          'status'   => 201,
 	          'error'    => null,
 	          'messages' => [
-              'success' => 'Employee created successfully'
+              'success' => 'Data created successfully'
+	          ]
+	      ];
+	      return $this->respondCreated($response);
+    }
+
+    public function editData()
+    {
+        // $boardModel = new BoardModel();
+        $db = db_connect('default');
+        $builder = $db->table('board');
+        $data = [
+        	'name' => $this->request->getPost('name'),
+            'title' => $this->request->getPost('title'),
+            'comment'  => $this->request->getPost('comment'),
+            // 'wdate' => $this->request->getPost('wdate')
+            ];
+        $builder->update($data);
+        $response = [
+	          'status'   => 201,
+	          'error'    => null,
+	          'messages' => [
+              'success' => 'Data updated successfully'
 	          ]
 	      ];
 	      return $this->respondCreated($response);
@@ -55,8 +78,5 @@ class Boarddb extends ResourceController
 	         session()->setFlashdata('message', 'Record not found!');
 	         session()->setFlashdata('alert-class', 'alert-danger');
       	}
-
-      return redirect()->route('/');
-    	return redirect()->to('Board/BoardList');
     }
 }

@@ -11,7 +11,7 @@
   <div id="app"> 
     <div data-app>
       <template>
-        <v-app-bar> 새 게시글 </v-app-bar>
+        <v-app-bar> 수정 </v-app-bar>
         <v-form
           @submit.prevent="sendPost">
           <v-container>
@@ -26,30 +26,36 @@
                required 
                v-model="title" 
                maxlength="50" 
-              ></v-text-field> 
+              >
+                {{ title }} 
+              </v-text-field> 
             </v-row> 
             <v-row>
               <v-text-field 
-               :counter="50" 
-               label="작성자" 
-               name="name" 
-               required 
-               v-model="name" 
-               maxlength="50" 
-              ></v-text-field> 
+                :counter="50" 
+                label="작성자" 
+                name="name" 
+                required 
+                v-model="name" 
+                maxlength="50" 
+              > 
+                {{ name }}
+              </v-text-field> 
             </v-row> 
             <v-row>
               내용 
             </v-row> 
             <v-row>
               <v-textarea
-               filled 
-               name="comment" 
-               hint="내용을 입력해주세요." 
-               v-model="comment" 
-               :counter="1000" 
-               maxlength="1000" 
-              ></v-textarea> 
+                filled 
+                name="comment" 
+                hint="내용을 입력해주세요." 
+                v-model="comment" 
+                :counter="1000" 
+                maxlength="1000" 
+              > 
+                {{ comment }} 
+              </v-textarea> 
             </v-row> 
             <v-row align="center">
               <v-col
@@ -59,7 +65,7 @@
                 outlined color="blue" 
                 type="submit"
                 @click="listClick"> 
-                  등록 
+                  수정 
                 </v-btn> 
                 <v-btn outlined color="blue" @click="listClick"> 목록 </v-btn> 
               </v-col>
@@ -77,32 +83,51 @@
     new Vue({
       el: '#app',
       vuetify: new Vuetify(),
-       methods: {
-        sendPost: function () {
-          var postData = new FormData();
-          postData.append('title', this.title);
-          postData.append('name', this.name);
-          postData.append('comment', this.comment);
-          // postData.append('wdate', 'now()');
-          axios.post('http://localhost/index.php/boarddb/create', postData)
-          .then(function(res) {
-            console.log(res.data)
-          }, function() {
-            console.log('failed')
-          })
-        },
-        listClick() {
-         location.href = '../' 
-        }
-      }, 
       data() {
         return {
+         id : location.search,
          title : '', 
          name : '',
          comment: '', 
         } 
-      }
-  })
+      },
+      created() {
+            this.fetch() 
+      }, 
+      methods: {
+        fetch() {
+          const data = location.pathname.split('/');
+          console.log(data);
+          const id = data[data.length-1];
+          console.log(id);
+          axios.get(`http://localhost/index.php/Boarddb/eachdata/${id}`) 
+          .then((response) => {
+            console.log(response)
+            this.title = response.data.title
+            this.name = response.data.name
+            this.comment = response.data.comment
+          }) 
+          .catch((error) => {
+            console.log(error) 
+          }) 
+        },
+        sendPost: function () {
+          var postData = new FormData();  
+            postData.append('title', this.title);
+            postData.append('name', this.name);
+            postData.append('comment', this.comment);
+            axios.post('http://localhost/index.php/boarddb/editData', postData)
+            .then(function(res) {
+              console.log(res.data)
+            }, function() {
+              console.log('failed')
+          })
+        },
+        listClick() {
+          location.href = '../' 
+        }
+      }, 
+    })
   </script>
 </body>
 </html>

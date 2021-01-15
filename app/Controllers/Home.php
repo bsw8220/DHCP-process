@@ -17,9 +17,9 @@ class Home extends BaseController
 		echo view('Board/BoardView');
 	}
 
-	public function rewrite()
+	public function upData($id)
 	{
-		echo view('Board/BoardWrite');
+		echo view('Board/BoardEdit');
 	}
 
 	//--------------------------------------------------------------------
