@@ -22,6 +22,11 @@ class Home extends BaseController
 		echo view('Board/BoardEdit');
 	}
 
+	public function calendar()
+	{
+		echo view('Calendar/Calendar');
+	}
+
 	//--------------------------------------------------------------------
 
 }

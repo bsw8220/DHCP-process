@@ -10,24 +10,33 @@
 <body>
   <div id="app"> 
     <template>
-      <div data-app>
-        <v-app-bar> 게시판 과제 </v-app-bar>
-        <v-container
-          fluid :grid-list-md="!$vuetify.breakpoint.xs" :class="$vuetify.breakpoint.xs ? 'pa-0' : ''"> 
-          <v-data-table
-            class="pa-md-20 mx-lg-auto text-center"
-            :headers="headers"
-            :items="desserts" 
-            :items-per-page="5" 
-            class="elevation-1" 
-            @click:row="rowClick"
-          > 
-          </v-data-table> 
-          <v-row>
-            <v-btn outlined color="blue" @click="writeClick" > 작성 </v-btn> 
-          </v-row> 
-        </v-container> 
-      </div>
+      <v-app>
+        <div data-app>
+          <v-app-bar app>
+           게시판 과제
+           <v-spacer></v-spacer>
+           <v-btn outlined color="blue" @click="calendarClick">Calendar</v-btn>
+          </v-app-bar>
+          <v-content>
+            <v-container
+              fluid :grid-list-md="!$vuetify.breakpoint.xs" :class="$vuetify.breakpoint.xs ? 'pa-0' : ''"> 
+              <v-data-table
+                class="pa-md-20 mx-lg-auto text-center"
+                :headers="headers"
+                :items="desserts" 
+                :items-per-page="10" 
+                class="elevation-1" 
+                @click:row="rowClick"
+              > 
+              </v-data-table> 
+              <v-toolbar flat>
+                <v-spacer></v-spacer>
+                <v-btn outlined color="blue" @click="writeClick" > 작성 </v-btn> 
+              </v-toolbar> 
+            </v-container> 
+          </v-content>
+        </div>
+      </v-app>
     </template>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -53,6 +62,9 @@
           .catch((error) => {
             console.log(error)
           }) 
+        },
+        calendarClick() {
+          location.href = 'http://localhost/index.php/home/calendar' 
         },
         writeClick() {
           location.href = 'http://localhost/index.php/home/write' 

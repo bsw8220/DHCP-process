@@ -9,7 +9,6 @@ class Boarddb extends ResourceController
     public function index()
     {
     	$boardModel = new BoardModel();
-        $boardModel->orderBy('wdate', 'DESC');
     	$data = $boardModel -> findAll();
     	return $this->respond($data);
     }
@@ -24,12 +23,14 @@ class Boarddb extends ResourceController
             'comment'  => $this->request->getPost('comment'),
             ];
         $builder->insert($data);
-        // $query = $db->query('ALTER TABLE board AUTO_INCREMENT=1');
-        // $query = $db->query('SET @COUNT = 0');
-        // $query = $db->query('UPDATE board SET id = @COUNT:=@COUNT+1');
-        $results = $query->getResult();
-
-	    return $this->respondCreated($results);
+        $response = [
+	          'status'   => 201,
+	          'error'    => null,
+	          'messages' => [
+              'success' => 'Data created successfully'
+	          ]
+	      ];
+	      return $this->respondCreated($response);
     }
 
     public function editData()
@@ -37,14 +38,19 @@ class Boarddb extends ResourceController
         $db = db_connect('default');
         $builder = $db->table('board');
         $data = [
-            'id' => $this->request->getPost('id'),
         	'name' => $this->request->getPost('name'),
             'title' => $this->request->getPost('title'),
             'comment'  => $this->request->getPost('comment'),
             ];
-        $builder->update($data, ["id"=>$data["id"]]);
-        
-	    return $this->respondCreated($data["id"]);
+        $builder->update($id,$data);
+        $response = [
+	          'status'   => 201,
+	          'error'    => null,
+	          'messages' => [
+              'success' => 'Data created successfully'
+	          ]
+	      ];
+	      return $this->respondCreated($response);
     }
 
     public function eachdata($id)
@@ -61,10 +67,12 @@ class Boarddb extends ResourceController
     	if($boardModel->find($id)){
 
 	         $boardModel->delete($id);
+
+	         session()->setFlashdata('message', 'Deleted Successfully!');
+	         session()->setFlashdata('alert-class', 'alert-success');
+      	}else{
+	         session()->setFlashdata('message', 'Record not found!');
+	         session()->setFlashdata('alert-class', 'alert-danger');
       	}
-        // $query = $boardModel->query('ALTER TABLE board AUTO_INCREMENT=1');
-        // $query = $boardModel->query('SET @COUNT = 0');
-        // $query = $boardModel->query('UPDATE board SET id = @COUNT:=@COUNT+1');
-        return $this->respondDeleted("success");
     }
 }

@@ -12,49 +12,72 @@
   <div id="app"> 
     <div data-app>
       <template>
-        <v-app-bar> {{ title }} </v-app-bar>
-        <v-form>
-          <v-container>
-            <div class="vwriter">
-              <v-col
-                cols="12"
-                md="4">
-                <v-banner>
-                  작성자
-                </v-banner>
-              </v-col>
-              <v-col
-                cols="12"
-                md="6">
-                 {{ name }}
-              </v-col>
-              <v-spacer></v-spacer> 
-            </div>
-            <div class="vcomment">
-              <v-col
-                cols="12"
-                md="4">
-                <v-banner>
-                  내용 
-                </v-banner>
-              </v-col>
-              <v-col
-                cols="12"
-                md="4">
-                {{ comment }} 
-              </v-col> 
-            </div>
-            <v-row align="center">
-              <v-col
-                cols="12"
-                sm="6">
-              <v-btn outlined color="blue" @click="listClick"> 목록 </v-btn>
-              <v-btn outlined color="blue" @click="delClick"> 삭제 </v-btn>  
-              <v-btn outlined color="blue" @click="editClick"> 수정 </v-btn>
-              </v-col>
-            </v-row> 
-          </v-container> 
-        </v-form> 
+        <v-app>
+          <v-app-bar app>
+              {{ title }}
+          </v-app-bar>
+          <v-content>
+            <v-form>
+              <v-container>
+                <div class="vwriter">
+                  <v-col
+                    cols="12"
+                    md="4">
+                    <v-banner>
+                      작성자
+                    </v-banner>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    md="6">
+                     {{ name }}
+                  </v-col>
+                  <v-spacer></v-spacer> 
+                </div>
+                <div class="vcomment">
+                  <v-col
+                    cols="12"
+                    md="4">
+                    <v-banner>
+                      내용 
+                    </v-banner>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    md="4">
+                    {{ comment }} 
+                  </v-col> 
+                </div>
+                <v-toolbar flat>
+                  <v-spacer></v-spacer>
+                  <v-btn outlined color="blue" @click="listClick" sm="3"> 목록 </v-btn>
+                  <v-btn 
+                  outlined color="blue" 
+                  @click.native="overlay=!overlay"> 삭제 </v-btn>  
+                  <v-btn outlined color="blue" @click="editClick"> 수정 </v-btn>
+                </v-toolbar>
+                <v-overlay
+                  :z-index="zIndex"
+                  :value="overlay">
+                    <v-card>
+                      <v-toolbar flat justify="center">
+                        정말 삭제하시겠습니까?
+                      </v-toolbar>
+                      <v-toolbar flat>
+                        <v-spacer></v-spacer>
+                        <v-col>
+                          <v-btn outlined color="blue" @click="delClick">삭제</v-btn>
+                        </v-col>
+                        <v-col>
+                          <v-btn outlined color="blue" @click.native="overlay=false">아니오</v-btn>
+                        </v-col>
+                      </v-toolbar>
+                    </v-card>
+                  </v-overlay>
+              </v-container> 
+            </v-form> 
+          </v-content>
+        </v-app>
       </template> 
     </div>
   </div>
@@ -66,13 +89,12 @@
     new Vue({
       el: '#app',
         vuetify: new Vuetify(),
-        data() {
-          return{
+        data: {
+            overlay: false,
             id: location.search,
             title : '', 
             name : '',
-            comment: ''
-            } 
+            comment: '',
           }, 
         created() {
           this.fetch() 
