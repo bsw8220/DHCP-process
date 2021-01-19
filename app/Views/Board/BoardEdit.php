@@ -12,11 +12,11 @@
     <div data-app>
       <template>
         <v-app>
-          <v-app-bar app> 수정 </v-app-bar>
+          <v-app-bar app class="mr-10 ml-10"> 수정 </v-app-bar>
           <v-main>
             <v-form
               @submit.prevent="sendPost">
-              <v-container>
+              <v-container style="maxWidth: 700px;">
                 <v-row>
                   <v-input
                     label="글 번호" 

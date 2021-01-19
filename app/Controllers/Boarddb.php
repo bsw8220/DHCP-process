@@ -22,6 +22,7 @@ class Boarddb extends ResourceController
         	'name' => $this->request->getPost('name'),
             'title' => $this->request->getPost('title'),
             'comment'  => $this->request->getPost('comment'),
+            'pass' => $this->request->getPost('pass'),
             ];
         $builder->insert($data);
         // $query = $db->query('ALTER TABLE board AUTO_INCREMENT=1');

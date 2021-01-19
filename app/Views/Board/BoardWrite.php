@@ -12,14 +12,13 @@
     <div data-app>
       <template>
         <v-app>
-          <v-app-bar app> 새 게시글 </v-app-bar>
+          <v-app-bar app class="mr-10 ml-10"> 새 게시글 </v-app-bar>
           <v-content>
             <v-form
-              @submit.prevent="sendPost">
-              <v-container>
-                <v-row>
-                  제목 
-                </v-row> 
+              @submit.prevent="sendPost"
+              ref="form"
+              v-model="valid">
+              <v-container style="maxWidth: 700px;">
                 <v-row>
                   <v-text-field 
                    :counter="50" 
@@ -53,11 +52,24 @@
                    maxlength="1000" 
                   ></v-textarea> 
                 </v-row> 
+                <v-row>
+                  <v-text-field
+                  v-model="pass"
+                  :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                  :rules="[rules.required, rules.min]"
+                  :type="show ? 'text' : 'password'"
+                  name="input-10-1"
+                  label="비밀번호"
+                  counter
+                  @click:append="show = !show"
+                  ></v-text-field> 
+                </v-row> 
                 <v-row align="center">
                   <v-col
                     cols="12"
                     sm="6">
                     <v-btn 
+                    :disabled="!valid"
                     outlined color="blue" 
                     type="submit"
                     @click="listClick"> 
@@ -87,6 +99,7 @@
           postData.append('title', this.title);
           postData.append('name', this.name);
           postData.append('comment', this.comment);
+          postData.append('pass', this.pass);
           axios.post('http://localhost/index.php/boarddb/create', postData)
           .then((respose) => {
             console.log(res.data)
@@ -101,9 +114,16 @@
       }, 
       data() {
         return {
-         title : '', 
-         name : '',
-         comment: '',
+          valid: false,
+          show: false,
+          title : '', 
+          name : '',
+          comment: '',
+          pass: '',
+          rules: {
+            required: value => !!value || '필수 사항',
+            min: v => v.length >= 8 || '최소 8자 이상 작성 부탁드립니다.',
+        },
         } 
       }
   })

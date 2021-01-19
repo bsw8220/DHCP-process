@@ -13,12 +13,14 @@
     <div data-app>
       <template>
         <v-app>
-          <v-app-bar app>
+          <v-app-bar app class="mr-10 ml-10">
               {{ title }}
           </v-app-bar>
           <v-content>
-            <v-form>
-              <v-container>
+            <v-form
+            ref="form"
+            v-model="valid">  
+              <v-container style="maxWidth: 700px;">
                 <div class="vwriter">
                   <v-col
                     cols="12"
@@ -50,30 +52,52 @@
                 </div>
                 <v-toolbar flat>
                   <v-spacer></v-spacer>
-                  <v-btn outlined color="blue" @click="listClick" sm="3"> 목록 </v-btn>
                   <v-btn 
                   outlined color="blue" 
-                  @click.native="overlay=!overlay"> 삭제 </v-btn>  
-                  <v-btn outlined color="blue" @click="editClick"> 수정 </v-btn>
+                  @click="listClick" 
+                  class="botton ma-2"> 목록 </v-btn>
+                  <v-btn 
+                  outlined color="blue" 
+                  @click.native="overlay=!overlay"
+                  class="botton ma-2"> 삭제 </v-btn>  
+                  <v-btn 
+                  outlined color="blue" 
+                  @click="editClick"
+                  class="botton ma-2"> 수정 </v-btn>
                 </v-toolbar>
                 <v-overlay
                   :z-index="zIndex"
                   :value="overlay">
-                    <v-card>
-                      <v-toolbar flat justify="center">
-                        정말 삭제하시겠습니까?
-                      </v-toolbar>
-                      <v-toolbar flat>
-                        <v-spacer></v-spacer>
-                        <v-col>
-                          <v-btn outlined color="blue" @click="delClick">삭제</v-btn>
-                        </v-col>
-                        <v-col>
-                          <v-btn outlined color="blue" @click.native="overlay=false">아니오</v-btn>
-                        </v-col>
-                      </v-toolbar>
-                    </v-card>
-                  </v-overlay>
+                  <v-card>
+                    <v-toolbar flat justify="center">
+                      정말 삭제하시겠습니까?
+                    </v-toolbar>
+                    <v-text-field
+                    class="ma-2"
+                    :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                    :rules="[rules.required, rules.min]"
+                    :type="show ? 'text' : 'password'"
+                    name="input-10-1"
+                    label="비밀번호"
+                    counter
+                    @click:append="show = !show"
+                    ></v-text-field> 
+                    <v-row>
+                      <v-btn 
+                      class="ma-2"
+                      :disabled="!valid"
+                      color="error"
+                      plain 
+                      @click="delClick">삭제</v-btn>
+                      <v-spacer></v-spacer>
+                      <v-btn 
+                      class="ma-2"
+                      color="grey"
+                      plain 
+                      @click.native="overlay=false">아니오</v-btn>
+                    </v-row>
+                  </v-card>
+                </v-overlay>
               </v-container> 
             </v-form> 
           </v-content>
@@ -90,12 +114,21 @@
       el: '#app',
         vuetify: new Vuetify(),
         data: {
-            overlay: false,
-            id: location.search,
-            title : '', 
-            name : '',
-            comment: '',
-          }, 
+          valid: false,
+          overlay: false,
+          zIndex: 0,
+          show: false,
+          id: location.search,
+          title: '', 
+          name: '',
+          comment: '',
+          pass:'',
+          rules: {
+            required: value => !!value || '필수 사항',
+            min: v => v.length >= 8 || '최소 8자 이상 입니다.',
+            match: value => !!value == this.pass || '패스워드가 일치하지 않습니다.',
+          },
+        }, 
         created() {
           this.fetch() 
         }, 
@@ -109,6 +142,7 @@
               this.title = response.data.title
               this.name = response.data.name
               this.comment = response.data.comment
+              this.pass = response.data.pass
             }) 
             .catch((error) => {
               console.log(error) 
@@ -133,7 +167,7 @@
             const data = location.pathname.split('/');
             const id = data[data.length-1];
             location.href = `http://localhost/index.php/home/upData/${id}`
-          }, 
+          },
         }, 
     })
   </script>

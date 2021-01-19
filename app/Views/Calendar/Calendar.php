@@ -12,7 +12,11 @@
   <template>
     <v-app>
     <div data-app>
-  <v-row class="fill-height">
+  <v-row 
+  class="fill-height" 
+  style="maxWidth: 700px; margin: auto;"
+  align-center
+  justify-center>
     <v-col>
       <v-sheet height="64">
         <v-toolbar
@@ -97,9 +101,8 @@
           :events="events"
           :event-color="getEventColor"
           :type="type"
-          @click:event="showEvent"
+          @click:date="showEvent"
           @click:more="viewDay"
-          @click:date="viewDay"
           @change="updateRange"
         ></v-calendar>
         <v-menu

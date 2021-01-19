@@ -12,14 +12,14 @@
     <template>
       <v-app>
         <div data-app>
-          <v-app-bar app>
+          <v-app-bar app class="mr-10 ml-10">
            게시판 과제
            <v-spacer></v-spacer>
            <v-btn outlined color="blue" @click="calendarClick">Calendar</v-btn>
           </v-app-bar>
           <v-content>
             <v-container
-              fluid :grid-list-md="!$vuetify.breakpoint.xs" :class="$vuetify.breakpoint.xs ? 'pa-0' : ''"> 
+              fluid :grid-list-md="!$vuetify.breakpoint.xs" :class="$vuetify.breakpoint.xs ? 'pa-0' : ''" style="maxWidth: 700px;"> 
               <v-data-table
                 class="pa-md-20 mx-lg-auto text-center"
                 :headers="headers"
