@@ -12,7 +12,7 @@
     <div data-app>
       <template>
         <v-app>
-          <v-app-bar app class="mr-10 ml-10"> 수정 </v-app-bar>
+          <v-app-bar app> 수정 </v-app-bar>
           <v-main>
             <v-form
               @submit.prevent="sendPost">
@@ -119,8 +119,6 @@
         },
         sendPost() {
           console.log(this.id);
-          // const data = location.pathname.split('/');
-          // const id = data[data.length-1];
           let postData = new FormData();
           postData.append('id', this.id);
           postData.append('title', this.title);
@@ -128,7 +126,7 @@
           postData.append('comment', this.comment);
           axios.post('http://localhost/index.php/boarddb/editdata', postData)
           .then((response) => {
-            console.log(res.data)
+            console.log(response.data)
           }) 
           .catch ((error) => {
             console.log(error)

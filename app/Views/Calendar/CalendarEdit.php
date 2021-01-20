@@ -128,7 +128,9 @@
         this.fetch() 
       }, 
       methods: {
-        fetch(id) {
+        fetch() {
+          const data = location.pathname.split('/');
+          const id = data[data.length-1];
           axios.get(`http://localhost/index.php/calendardb/eachdata/${id}`) 
           .then((response) => {
             console.log(response.data)
@@ -145,14 +147,15 @@
           }) 
         },
         sendPost() {
-          var postData = new FormData();
+          let postData = new FormData();
+          postData.append('id', this.id);
           postData.append('memo', this.memo);
           postData.append('earn', this.earn);
           postData.append('expend', this.expend);
           postData.append('dates', this.dates);
           postData.append('hour', this.hour);
           postData.append('minute', this.minute);
-          axios.post('http://localhost/index.php/calendardb/editData', postData)
+          axios.post(`http://localhost/index.php/calendardb/editData/{this.id}`, postData)
           .then((response) => {
             console.log(response.data)
           })
@@ -161,7 +164,7 @@
           })
         },
         returnClick() {
-          location.href = 'http://localhost/index.php/home'
+          location.href = 'http://localhost/index.php/home/calendar'
         },
       },
     })

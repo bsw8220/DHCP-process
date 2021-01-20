@@ -143,9 +143,9 @@
               <span v-html="selectedEvent.hour"></span>
               <span>시</span>
               <span v-html="selectedEvent.minute"></span>
-              <span>분</span>
+              <span>분</span><br>
               <span v-html="selectedEvent.earn"></span>
-              <span>원 수입</span>
+              <span>원 수입</span><br>
               <span v-html="selectedEvent.expend"></span>
               <span>원 지출</span>
             </v-card-text>
@@ -303,8 +303,8 @@
                 createClick() {
                   location.href = 'http://localhost/index.php/home/calendarcreate' 
                 },
-                editClick(id) {
-                  location.href = `http://localhost/index.php/home/calendaredit/${item.id}` 
+                editClick(currentid) {
+                  location.href = `http://localhost/index.php/home/calendaredit/${this.currentid}` 
                 },
               },
             })
