@@ -2,77 +2,69 @@
 namespace App\Controllers;
 use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\API\ResponseTrait;
-use App\Models\BoardModel;
+use App\Models\CalendarModel;
 
-class Boarddb extends ResourceController
+class Calendardb extends ResourceController
 {
     public function index()
     {
-    	$boardModel = new BoardModel();
-    	$data = $boardModel -> findAll();
+    	$CalendarModel = new CalendarModel();
+    	$data = $CalendarModel -> findAll();
     	return $this->respond($data);
     }
 
     public function create()
     {
         $db = db_connect('default');
-        $builder = $db->table('board');
+        $builder = $db->table('calendar');
         $data = [
-        	'name' => $this->request->getPost('name'),
-            'title' => $this->request->getPost('title'),
-            'comment'  => $this->request->getPost('comment'),
+            'memo'  => $this->request->getPost('memo'),
+        	'earn' => $this->request->getPost('earn'),
+            'expend' => $this->request->getPost('expend'),
+            'dates'  => $this->request->getPost('dates'),
+            'hour'  => $this->request->getPost('hour'),
+            'minute'  => $this->request->getPost('minute'),
             ];
         $builder->insert($data);
-        $response = [
-	          'status'   => 201,
-	          'error'    => null,
-	          'messages' => [
-              'success' => 'Data created successfully'
-	          ]
-	      ];
-	      return $this->respondCreated($response);
+	   return $this->respond($data);
     }
 
     public function editData()
     {
         $db = db_connect('default');
-        $builder = $db->table('board');
+        $builder = $db->table('calendar');
         $data = [
-        	'name' => $this->request->getPost('name'),
-            'title' => $this->request->getPost('title'),
-            'comment'  => $this->request->getPost('comment'),
+            'id' => $this->request->getPost('id'),
+            'memo'  => $this->request->getPost('memo'),
+            'earn' => $this->request->getPost('earn'),
+            'expend' => $this->request->getPost('expend'),
+            'dates'  => $this->request->getPost('dates'),
+            'hour'  => $this->request->getPost('hour'),
+            'minute'  => $this->request->getPost('minute'),
             ];
-        $builder->update($id,$data);
-        $response = [
-	          'status'   => 201,
-	          'error'    => null,
-	          'messages' => [
-              'success' => 'Data created successfully'
-	          ]
-	      ];
-	      return $this->respondCreated($response);
+        $builder->update($data, ["id"=>$data["id"]]);
+        
+        return $this->respondCreated($data["id"]);
     }
 
     public function eachdata($id)
     {
-        $boardModel = new BoardModel();
-    	$data = $boardModel -> find($id);
+        $calendarModel = new CalendarModel();
+    	$data = $calendarModel -> find($id);
         return $this->respond($data);
     }
 
     public function deletedata($id)
     {
-    	$boardModel = new BoardModel();
-    	
-    	if($boardModel->find($id)){
+    	$calendarModel = new CalendarModel();
+        
+        if($calendarModel->find($id)){
 
-	         $boardModel->delete($id);
-
-	         session()->setFlashdata('message', 'Deleted Successfully!');
-	         session()->setFlashdata('alert-class', 'alert-success');
-      	}else{
-	         session()->setFlashdata('message', 'Record not found!');
-	         session()->setFlashdata('alert-class', 'alert-danger');
-      	}
+             $calendarModel->delete($id);
+        }
+        // $query = $boardModel->query('ALTER TABLE board AUTO_INCREMENT=1');
+        // $query = $boardModel->query('SET @COUNT = 0');
+        // $query = $boardModel->query('UPDATE board SET id = @COUNT:=@COUNT+1');
+        return $this->respondDeleted("success");
     }
 }

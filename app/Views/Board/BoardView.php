@@ -13,7 +13,7 @@
     <div data-app>
       <template>
         <v-app>
-          <v-app-bar app class="mr-10 ml-10">
+          <v-app-bar app>
               {{ title }}
           </v-app-bar>
           <v-content>
@@ -126,7 +126,7 @@
           rules: {
             required: value => !!value || '필수 사항',
             min: v => v.length >= 8 || '최소 8자 이상 입니다.',
-            match: value => !!value == this.pass || '패스워드가 일치하지 않습니다.',
+            match: v => (!!v && this.pass) || '패스워드가 일치하지 않습니다.',
           },
         }, 
         created() {
@@ -149,7 +149,7 @@
             }) 
           }, 
           listClick() {
-            location.href = '../'
+            location.href = 'http://localhost/index.php/home'
           },
           delClick() {
             const data = location.pathname.split('/');
@@ -157,7 +157,7 @@
             axios.delete(`http://localhost/index.php/Boarddb/deletedata/${id}`) 
             .then((response) => {
               console.log(response)
-              location.href = '../'
+              location.href = 'http://localhost/index.php/home'
             }) 
             .catch((error) => {
               console.log(error) 

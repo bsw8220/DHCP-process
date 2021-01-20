@@ -59,6 +59,11 @@
             {{ $refs.calendar.title }}
           </v-toolbar-title>
           <v-spacer></v-spacer>
+          <v-btn 
+          icon
+          @click="createClick">
+            <v-icon>mdi-calendar-plus</v-icon>
+          </v-btn>
           <v-menu
             bottom
             right
@@ -101,8 +106,9 @@
           :events="events"
           :event-color="getEventColor"
           :type="type"
-          @click:date="showEvent"
+          @click:event="showEvent"
           @click:more="viewDay"
+          @click:date="viewDay"
           @change="updateRange"
         ></v-calendar>
         <v-menu
@@ -120,20 +126,28 @@
               :color="selectedEvent.color"
               dark
             >
-              <v-btn icon>
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
-              <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+              <v-toolbar-title class="ma-8" v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
+              <v-btn 
+              icon
+              @click.native="overlay=!overlay">
+                <v-icon>mdi-calendar-remove</v-icon>
               </v-btn>
-              <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
+              <v-btn 
+              icon
+              @click="editClick">
+                <v-icon>mdi-calendar-edit</v-icon>
               </v-btn>
             </v-toolbar>
             <v-card-text>
-              <span v-html="selectedEvent.details"></span>
+              <span v-html="selectedEvent.hour"></span>
+              <span>시</span>
+              <span v-html="selectedEvent.minute"></span>
+              <span>분</span>
+              <span v-html="selectedEvent.earn"></span>
+              <span>원 수입</span>
+              <span v-html="selectedEvent.expend"></span>
+              <span>원 지출</span>
             </v-card-text>
             <v-card-actions>
               <v-btn
@@ -146,6 +160,28 @@
             </v-card-actions>
             </v-card>
           </v-menu>
+          <v-overlay
+                  :z-index="zIndex"
+                  :value="overlay">
+                  <v-card>
+                    <v-toolbar flat justify="center">
+                      정말 삭제하시겠습니까?
+                    </v-toolbar>
+                    <v-row>
+                      <v-btn 
+                      class="ma-2"
+                      color="error"
+                      plain 
+                      @click="delClick(selectedEvent.id)">삭제</v-btn>
+                      <v-spacer></v-spacer>
+                      <v-btn 
+                      class="ma-2"
+                      color="grey"
+                      plain 
+                      @click.native="overlay=false">아니오</v-btn>
+                    </v-row>
+                  </v-card>
+                </v-overlay>
         </v-sheet>
       </v-col>
     </v-row>
@@ -162,6 +198,14 @@
         el: '#app',
              vuetify: new Vuetify(),
               data: () => ({
+                overlay: false,
+                zIndex: 0,
+                memo: '',
+                earn: '',
+                expend: '',
+                dates: new Date().toISOString().substr(0, 10),
+                hour: '',
+                minute: '',
                 focus: '',
                 type: 'month',
                 typeToLabel: {
@@ -197,6 +241,7 @@
                   this.$refs.calendar.next()
                 },
                 showEvent ({ nativeEvent, event }) {
+                  this.currentid = event.id;
                   const open = () => {
                     this.selectedEvent = event
                     this.selectedElement = nativeEvent.target
@@ -214,37 +259,52 @@
 
                   nativeEvent.stopPropagation()
                 },
-                updateRange ({ start, end }) {
-                  const events = []
-
+                updateRange ({ start, end }) { 
+                  axios.get('http://localhost/index.php/calendardb') // Get은 배열로 가져오므로 0부터 콘솔로그를 찍어서 오류난 지점을 찾아본다.
+                  .then((response) => {
+                    const events = []
+                    response.data.forEach(item =>{
+                    events.push({
+                      id: item.id,
+                      start: item.dates+' '+item.hour+':'+item.minute+':00',
+                      end: item.dates+' '+item.hour+':'+item.minute+':00',
+                      name: item.memo,
+                      earn: item.earn,
+                      expend: item.expend,
+                      hour: item.hour,
+                      minute: item.minute,
+                      color: this.colors[this.rnd(0, this.colors.length - 1)],
+                    })
+                    this.events = events
+                  })
+                  })
+                  .catch((error) => {
+                    console.log(error)
+                  })
                   // const min = new Date(`${start.date}T00:00:00`)
                   // const max = new Date(`${end.date}T23:59:59`)
-                  // const days = (max.getTime() - min.getTime()) / 86400000
-                  // const eventCount = this.rnd(days, days + 20)
-
-                  // for (let i = 0; i < eventCount; i++) {
-                  //   const allDay = this.rnd(0, 3) === 0
-                  //   const firstTimestamp = this.rnd(min.getEventColorime(), max.getTime())
-                  //   const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-                  //   const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-                  //   const second = new Date(first.getTime() + secondTimestamp)
-
-                    // events.push({
-                  //     name: this.names[this.rnd(0, this.names.length - 1)],
-                  //     start: first,
-                  //     end: second,
-                      // color: this.colors[this.rnd(0, this.colors.length - 1)],
-                  //     timed: !allDay,
-                    // })
-                  // }
-
-                  this.events = events
                 },
                 rnd (a, b) {
                   return Math.floor((b - a + 1) * Math.random()) + a
                 },
+                delClick(id) {
+                  axios.delete(`http://localhost/index.php/calendardb/deletedata/${id}`) 
+                  .then((response) => {
+                    console.log(response)
+                    location.reload();
+                  }) 
+                  .catch((error) => {
+                    console.log(error) 
+                  }) 
+                },
                 boardClick() {
-                  location.href = '../' 
+                  location.href = 'http://localhost/index.php/home' 
+                },
+                createClick() {
+                  location.href = 'http://localhost/index.php/home/calendarcreate' 
+                },
+                editClick(id) {
+                  location.href = `http://localhost/index.php/home/calendaredit/${item.id}` 
                 },
               },
             })

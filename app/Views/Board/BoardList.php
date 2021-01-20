@@ -12,7 +12,7 @@
     <template>
       <v-app>
         <div data-app>
-          <v-app-bar app class="mr-10 ml-10">
+          <v-app-bar app>
            게시판 과제
            <v-spacer></v-spacer>
            <v-btn outlined color="blue" @click="calendarClick">Calendar</v-btn>
