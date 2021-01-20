@@ -27,11 +27,6 @@ class Home extends BaseController
 		echo view('Calendar/Calendar');
 	}
 
-	public function caltest()
-	{
-		echo view('Calendar/Caltest');
-	}
-
 	public function calendaredit()
 	{
 		echo view('Calendar/CalendarEdit');

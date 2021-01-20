@@ -126,7 +126,7 @@
               :color="selectedEvent.color"
               dark
             >
-              <v-toolbar-title class="ma-8" v-html="selectedEvent.name"></v-toolbar-title>
+              <v-toolbar-title class="ma-8" v-html="selectedEvent.memo"></v-toolbar-title>
               <v-spacer></v-spacer>
               <v-btn 
               icon
@@ -144,10 +144,9 @@
               <span>시</span>
               <span v-html="selectedEvent.minute"></span>
               <span>분</span><br>
-              <span v-html="selectedEvent.earn"></span>
-              <span>원 수입</span><br>
-              <span v-html="selectedEvent.expend"></span>
-              <span>원 지출</span>
+              <span v-html="selectedEvent.type_info"></span>
+              <span v-html="selectedEvent.credit"></span>
+              <span> 원</span>
             </v-card-text>
             <v-card-actions>
               <v-btn
@@ -161,27 +160,36 @@
             </v-card>
           </v-menu>
           <v-overlay
-                  :z-index="zIndex"
-                  :value="overlay">
-                  <v-card>
-                    <v-toolbar flat justify="center">
-                      정말 삭제하시겠습니까?
-                    </v-toolbar>
-                    <v-row>
-                      <v-btn 
-                      class="ma-2"
-                      color="error"
-                      plain 
-                      @click="delClick(selectedEvent.id)">삭제</v-btn>
-                      <v-spacer></v-spacer>
-                      <v-btn 
-                      class="ma-2"
-                      color="grey"
-                      plain 
-                      @click.native="overlay=false">아니오</v-btn>
-                    </v-row>
-                  </v-card>
-                </v-overlay>
+            :z-index="zIndex"
+            :value="overlay">
+            <v-card>
+              <v-toolbar flat justify="center">
+                정말 삭제하시겠습니까?
+              </v-toolbar>
+              <v-row>
+                <v-btn 
+                class="ma-2"
+                color="error"
+                plain 
+                @click="delClick(selectedEvent.id)">삭제</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn 
+                class="ma-2"
+                color="grey"
+                plain 
+                @click.native="overlay=false">아니오</v-btn>
+              </v-row>
+            </v-card>
+          </v-overlay>
+          <v-toolbar flat>
+            <span>월 지출액 : {{ total_out() }}원</span>
+            <v-spacer></v-spacer>
+            <span>월 소득액 : {{ total_in() }}원</span>
+          </v-toolbar>
+          <v-toolbar flat>
+            <v-spacer></v-spacer>
+            <span>이달 총 소득 : {{ total_in() - total_out() }}원</span>
+          </v-toolbar>
         </v-sheet>
       </v-col>
     </v-row>
@@ -201,8 +209,8 @@
                 overlay: false,
                 zIndex: 0,
                 memo: '',
-                earn: '',
-                expend: '',
+                type_info: '',
+                credit: '',
                 dates: new Date().toISOString().substr(0, 10),
                 hour: '',
                 minute: '',
@@ -268,9 +276,9 @@
                       id: item.id,
                       start: item.dates+' '+item.hour+':'+item.minute+':00',
                       end: item.dates+' '+item.hour+':'+item.minute+':00',
-                      name: item.memo,
-                      earn: item.earn,
-                      expend: item.expend,
+                      memo: item.memo,
+                      type_info: item.type_info,
+                      credit: item.credit,
                       hour: item.hour,
                       minute: item.minute,
                       color: this.colors[this.rnd(0, this.colors.length - 1)],
@@ -305,6 +313,24 @@
                 },
                 editClick(currentid) {
                   location.href = `http://localhost/index.php/home/calendaredit/${this.currentid}` 
+                },
+                total_in() {
+                  var total = 0;
+                  this.events.forEach(item => {
+                    if(item.type_info == "수입"){
+                      total += Number(item.credit);
+                    }
+                  });
+                  return total;
+                },
+                total_out() {
+                  var total = 0;
+                  this.events.forEach(item => {
+                    if(item.type_info == "지출"){
+                      total += Number(item.credit);
+                    }
+                  });
+                  return total;
                 },
               },
             })

@@ -19,8 +19,8 @@ class Calendardb extends ResourceController
         $builder = $db->table('calendar');
         $data = [
             'memo'  => $this->request->getPost('memo'),
-        	'earn' => $this->request->getPost('earn'),
-            'expend' => $this->request->getPost('expend'),
+        	'type_info' => $this->request->getPost('type_info'),
+            'credit' => $this->request->getPost('credit'),
             'dates'  => $this->request->getPost('dates'),
             'hour'  => $this->request->getPost('hour'),
             'minute'  => $this->request->getPost('minute'),
@@ -36,8 +36,8 @@ class Calendardb extends ResourceController
         $data = [
             'id' => $this->request->getPost('id'),
             'memo'  => $this->request->getPost('memo'),
-            'earn' => $this->request->getPost('earn'),
-            'expend' => $this->request->getPost('expend'),
+            'type_info' => $this->request->getPost('type_info'),
+            'credit' => $this->request->getPost('credit'),
             'dates'  => $this->request->getPost('dates'),
             'hour'  => $this->request->getPost('hour'),
             'minute'  => $this->request->getPost('minute'),

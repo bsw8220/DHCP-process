@@ -29,26 +29,38 @@
                   maxlength="50" 
                   ></v-text-field> 
                 </v-row> 
+                <v-select
+                style="max-width:100px;"
+                :items="['수입','지출']"
+                v-model="type_info"
+                >
+                  <template v-slot:item="{ item, attrs, on }">
+                    <v-list-item
+                    v-bind="attrs"
+                    v-on="on">
+                      <v-list-item-title
+                      :id="attrs['aria-labelledby']"
+                      v-text="item"
+                      ></v-list-item-title>
+                    </v-list-item>
+                  </template>
+                </v-select>
                 <v-text-field
                 :counter="50" 
-                label="수입" 
-                name="earn" 
+                label="금액" 
+                name="credit" 
                 required 
-                v-model="earn" 
+                v-model="credit" 
                 maxlength="50"></v-text-field>
-                <v-text-field
-                :counter="50" 
-                type="number"
-                label="지출" 
-                name="expend" 
-                required 
-                v-model="expend" 
-                maxlength="50"></v-text-field>
+                <v-row>
+                  <v-col>
                 <template>
                   <v-row justify="center">
                     <v-date-picker v-model="dates"></v-date-picker>
                   </v-row>
                 </template>
+              </v-col>
+              <v-col>
                 <v-toolbar flat class="pt-10 pb-10">
                   <v-spacer></v-spacer>
                     <v-select
@@ -87,6 +99,8 @@
                       </template>
                     </v-select>분
                   </v-toolbar> 
+                </v-col>
+              </v-row>
                 <v-toolbar class="mt-10" flat align="center">
                   <v-spacer></v-spacer>
                   <v-btn 
@@ -114,11 +128,11 @@
     new Vue({
       el: '#app',
       vuetify: new Vuetify(),
-        data: ()=> ({
+        data: () => ({
             valid: false,
-            memo : '', 
-            earn : '',
-            expend: '',
+            memo: '',
+            type_info: '', 
+            credit: '',
             dates: '',
             hour: '',
             minute: '',
@@ -132,14 +146,14 @@
         sendPost() {
           var postData = new FormData();
           postData.append('memo', this.memo);
-          postData.append('earn', this.earn);
-          postData.append('expend', this.expend);
+          postData.append('type_info', this.type_info);
+          postData.append('credit', this.credit);
           postData.append('dates', this.dates);
           postData.append('hour', this.hour);
           postData.append('minute', this.minute);
           axios.post('http://localhost/index.php/calendardb/create', postData)
-          .then((respose) => {
-            console.log(res.data)
+          .then((response) => {
+            console.log(response.data)
           })
           .catch ((error) => {
             console.log(error)
