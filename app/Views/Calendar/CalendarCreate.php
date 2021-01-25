@@ -13,7 +13,7 @@
       <template>
         <v-app>
           <v-app-bar app> New </v-app-bar>
-          <v-content>
+          <v-main>
             <v-form
               @submit.prevent="sendPost"
               ref="form"
@@ -21,6 +21,7 @@
               <v-container style="maxWidth: 700px;">
                 <v-row>
                   <v-text-field 
+                  style="max-width:500px;"
                   :counter="50" 
                   label="Memo" 
                   name="memo" 
@@ -29,46 +30,50 @@
                   maxlength="50" 
                   ></v-text-field> 
                 </v-row> 
-                <v-select
-                style="max-width:100px;"
-                :items="['수입','지출']"
-                v-model="type_info"
-                >
-                  <template v-slot:item="{ item, attrs, on }">
-                    <v-list-item
-                    v-bind="attrs"
-                    v-on="on">
-                      <v-list-item-title
-                      :id="attrs['aria-labelledby']"
-                      v-text="item"
-                      ></v-list-item-title>
-                    </v-list-item>
-                  </template>
-                </v-select>
-                <v-text-field
-                :counter="50" 
-                label="금액" 
-                name="credit" 
-                required 
-                v-model="credit" 
-                maxlength="50"></v-text-field>
+                <v-row>
+                  <v-select
+                  style="max-width:100px;"
+                  class="mr-5"
+                  :items="['수입','지출']"
+                  v-model="type_info"
+                  >
+                    <template v-slot:item="{ item, attrs, on }">
+                      <v-list-item
+                      v-bind="attrs"
+                      v-on="on">
+                        <v-list-item-title
+                        :id="attrs['aria-labelledby']"
+                        v-text="item"
+                        ></v-list-item-title>
+                      </v-list-item>
+                    </template>
+                  </v-select>
+                  <v-text-field
+                  style="max-width:300px;"
+                  :counter="50" 
+                  label="금액" 
+                  name="credit" 
+                  required 
+                  v-model="credit" 
+                  maxlength="50"></v-text-field>
+                </v-row>
                 <v-row>
                   <v-col>
-                <template>
-                  <v-row justify="center">
-                    <v-date-picker v-model="dates"></v-date-picker>
-                  </v-row>
-                </template>
-              </v-col>
-              <v-col>
-                <v-toolbar flat class="pt-10 pb-10">
-                  <v-spacer></v-spacer>
-                    <v-select
-                    style="max-width:100px;"
-                    :items="['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']"
-                    label="시"
-                    v-model="hour"
-                    >
+                    <template>
+                      <v-row justify="center">
+                        <v-date-picker v-model="dates"></v-date-picker>
+                      </v-row>
+                    </template>
+                  </v-col>
+                  <v-col>
+                    <v-toolbar flat class="pt-10 pb-10">
+                      <v-spacer></v-spacer>
+                      <v-select
+                      style="max-width:100px;"
+                      :items="['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']"
+                      label="시"
+                      v-model="hour"
+                      >
                       <template v-slot:item="{ item, attrs, on }">
                         <v-list-item
                         v-bind="attrs"
@@ -79,28 +84,28 @@
                           ></v-list-item-title>
                         </v-list-item>
                       </template>
-                    </v-select>시
-                    <v-select
-                    style="max-width:100px;"
-                    class="ml-3 mr-3"
-                    :items="['00','05','10','15','20','25','30','35','40','45','50','55']"
-                    label="분"
-                    v-model="minute"
-                    >
-                      <template v-slot:item="{ item, attrs, on }">
-                        <v-list-item
-                        v-bind="attrs"
-                        v-on="on">
-                          <v-list-item-title
-                          :id="attrs['aria-labelledby']"
-                          v-text="item"
-                          ></v-list-item-title>
-                        </v-list-item>
-                      </template>
-                    </v-select>분
-                  </v-toolbar> 
-                </v-col>
-              </v-row>
+                      </v-select>시
+                      <v-select
+                      style="max-width:100px;"
+                      class="ml-3 mr-3"
+                      :items="['00','05','10','15','20','25','30','35','40','45','50','55']"
+                      label="분"
+                      v-model="minute"
+                      >
+                        <template v-slot:item="{ item, attrs, on }">
+                          <v-list-item
+                          v-bind="attrs"
+                          v-on="on">
+                            <v-list-item-title
+                            :id="attrs['aria-labelledby']"
+                            v-text="item"
+                            ></v-list-item-title>
+                          </v-list-item>
+                        </template>
+                      </v-select>분
+                    </v-toolbar> 
+                  </v-col>
+                </v-row>
                 <v-toolbar class="mt-10" flat align="center">
                   <v-spacer></v-spacer>
                   <v-btn 
@@ -115,7 +120,7 @@
                 </v-toolbar> 
               </v-container> 
             </v-form> 
-          </v-content>
+          </v-main>
         </v-app>
       </template> 
     </div>
@@ -136,11 +141,6 @@
             dates: '',
             hour: '',
             minute: '',
-            // item:[
-            //   {title: 'null'},
-            //   {title: '수입'},
-            //   {title: '지출'},
-            // ],
         }), 
        methods: {
         sendPost() {

@@ -16,7 +16,7 @@
           <v-app-bar app>
               {{ title }}
           </v-app-bar>
-          <v-content>
+          <v-main>
             <v-form
             ref="form"
             v-model="valid">  
@@ -79,6 +79,7 @@
                     :type="show ? 'text' : 'password'"
                     name="input-10-1"
                     label="비밀번호"
+                    v-model="pass"
                     counter
                     @click:append="show = !show"
                     ></v-text-field> 
@@ -100,7 +101,7 @@
                 </v-overlay>
               </v-container> 
             </v-form> 
-          </v-content>
+          </v-main>
         </v-app>
       </template> 
     </div>
@@ -124,9 +125,8 @@
           comment: '',
           pass:'',
           rules: {
-            required: value => !!value || '필수 사항',
+            required: value => !!value || '필수 입력 사항',
             min: v => v.length >= 8 || '최소 8자 이상 입니다.',
-            match: v => (!!v && this.pass) || '패스워드가 일치하지 않습니다.',
           },
         }, 
         created() {
@@ -139,10 +139,10 @@
             axios.get(`http://localhost/index.php/Boarddb/eachdata/${id}`) 
             .then((response) => {
               console.log(response)
+              this.id = response.data.id
               this.title = response.data.title
               this.name = response.data.name
               this.comment = response.data.comment
-              this.pass = response.data.pass
             }) 
             .catch((error) => {
               console.log(error) 
@@ -152,15 +152,17 @@
             location.href = 'http://localhost/index.php/home'
           },
           delClick() {
-            const data = location.pathname.split('/');
-            const id = data[data.length-1];
-            axios.delete(`http://localhost/index.php/Boarddb/deletedata/${id}`) 
+            var postData = new FormData();
+            postData.append('pass', this.pass);
+            postData.append('id', this.id);
+            axios.post('http://localhost/index.php/Boarddb/deletedata', postData)
             .then((response) => {
               console.log(response)
               location.href = 'http://localhost/index.php/home'
             }) 
             .catch((error) => {
-              console.log(error) 
+              alert("비밀번호가 일치하지 않습니다.");
+              this.overlay = false;
             }) 
           },
           editClick(item) {

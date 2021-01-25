@@ -15,7 +15,8 @@
           <v-app-bar app> 수정 </v-app-bar>
           <v-main>
             <v-form
-              @submit.prevent="sendPost">
+              @submit.prevent="sendPost"
+              v-model="valid">
               <v-container style="maxWidth: 700px;">
                 <v-row>
                   <v-input
@@ -64,19 +65,52 @@
                     {{ comment }} 
                   </v-textarea> 
                 </v-row> 
-                <v-row align="center">
-                  <v-col
-                    cols="12"
-                    sm="6">
-                    <v-btn 
-                    outlined color="blue" 
-                    type="submit"
-                    @click="listClick"> 
-                      수정 
-                    </v-btn> 
-                    <v-btn outlined color="blue" @click="listClick"> 목록 </v-btn> 
-                  </v-col>
-                </v-row> 
+                <v-toolbar flat class="ma-5">
+                  <v-spacer></v-spacer>
+                  <v-btn 
+                  outlined color="blue" 
+                  @click.native="overlay=!overlay"
+                  class="mr-3"
+                  > 
+                    수정 
+                  </v-btn> 
+                  <v-btn outlined color="blue" @click="listClick"> 목록 </v-btn> 
+                </v-toolbar>
+                <v-overlay
+                  :z-index="zIndex"
+                  :value="overlay">
+                  <v-card>
+                    <v-toolbar flat justify="center">
+                      비밀 번호를 입력해주세요.
+                    </v-toolbar>
+                    <v-text-field
+                    class="ma-2"
+                    :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                    :rules="[rules.required, rules.min]"
+                    :type="show ? 'text' : 'password'"
+                    name="input-10-1"
+                    label="비밀번호"
+                    v-model="pass"
+                    counter
+                    @click:append="show = !show"
+                    ></v-text-field> 
+                    <v-row>
+                      <v-btn 
+                      class="ma-2"
+                      :disabled="!valid"
+                      color="blue"
+                      type="submit"
+                      plain 
+                      @click="listClick">수정</v-btn>
+                      <v-spacer></v-spacer>
+                      <v-btn 
+                      class="ma-2"
+                      color="grey"
+                      plain 
+                      @click.native="overlay=false">취소</v-btn>
+                    </v-row>
+                  </v-card>
+                </v-overlay>
               </v-container> 
             </v-form> 
           </v-main>
@@ -93,10 +127,19 @@
       el: '#app',
       vuetify: new Vuetify(),
       data: {
-         id : location.search,
-         title : '', 
-         name : '',
-         comment: '', 
+        valid: false,
+        overlay: false,
+        zIndex: 0,
+        show: false,
+        id: location.search,
+        title: '', 
+        name: '',
+        comment: '', 
+        pass: '',
+        rules: {
+          required: value => !!value || '필수 입력 사항',
+          min: v => v.length >= 8 || '최소 8자 이상 입니다.',
+        },
       },
       created() {
         this.fetch() 
@@ -118,18 +161,19 @@
           }) 
         },
         sendPost() {
-          console.log(this.id);
-          let postData = new FormData();
+          var postData = new FormData();
           postData.append('id', this.id);
           postData.append('title', this.title);
           postData.append('name', this.name);
           postData.append('comment', this.comment);
+          postData.append('pass',this.pass);
           axios.post('http://localhost/index.php/boarddb/editdata', postData)
           .then((response) => {
             console.log(response.data)
           }) 
           .catch ((error) => {
             console.log(error)
+            alert("비밀번호가 일치하지 않습니다.");
           })
         },
         listClick() {

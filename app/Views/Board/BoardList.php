@@ -17,7 +17,7 @@
            <v-spacer></v-spacer>
            <v-btn outlined color="blue" @click="calendarClick">Calendar</v-btn>
           </v-app-bar>
-          <v-content>
+          <v-main>
             <v-container
               fluid :grid-list-md="!$vuetify.breakpoint.xs" :class="$vuetify.breakpoint.xs ? 'pa-0' : ''" style="maxWidth: 700px;"> 
               <v-data-table
@@ -34,7 +34,7 @@
                 <v-btn outlined color="blue" @click="writeClick" > 작성 </v-btn> 
               </v-toolbar> 
             </v-container> 
-          </v-content>
+          </v-main>
         </div>
       </v-app>
     </template>

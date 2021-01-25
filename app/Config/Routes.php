@@ -33,6 +33,7 @@ $routes->setAutoRoute(true);
 // $routes->get('/', 'Home::index');
 $routes->resource('boarddb');
 $routes->post('boarddb','Boarddb::create');
+// $routes->post('BoardModel/editData/(:num)','Boarddb::editData/$1');
 // $routes->post('boarddb/save', 'Boarddb::save');
 	
 
