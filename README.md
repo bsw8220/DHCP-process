@@ -1,9 +1,3 @@
-# 네트워크 장비 관리를 위한 웹 페이지 (CodeIgniter 4, Vue.js, Vuetify)
-
-## CodeIgniter 4 설치
-
-
-
 
 ## Important Change with index.php
 
